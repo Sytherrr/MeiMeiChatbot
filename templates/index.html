@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <title>Language Learning Chatbot</title>
+    <style>
+
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        font-feature-settings: 'clig' off, 'liga' off;
+        font-family: "Lilita One", serif;
+        font-size: 42px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 40px; /* 95.238% */
+        letter-spacing: -0.63px;
+        background: linear-gradient(90deg, #2D5BFF 0%, #8AA4FF 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    #command-type {
+        margin-bottom: 20px;
+    }
+
+    input[type="radio"] {
+        display: none;
+    }
+
+    label {
+        display: inline-block;
+        cursor: pointer;
+        margin-right: 10px;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    input[type="radio"]:checked + label {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    #chat-box {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        min-height: 200px;
+        overflow-y: auto;
+    }
+
+    .user-message {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+
+    .bot-message {
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    .user-message p,
+    .bot-message p {
+        display: inline-block;
+        padding: 8px 15px;
+        border-radius: 15px;
+        background-color: #007bff;
+        color: #fff;
+        max-width: 70%;
+    }
+
+    #user-input {
+        width: calc(100% - 120px);
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button {
+        padding: 8px 15px;
+        margin-left: 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+    </style>
+</head>
+<body>
+     <h1>Meimei Language Assistant</h1>
+     <div id="command-type">
+         <input type="radio" id="grammar" name="command" value="grammar">
+            <label for="grammar">Check Grammar</label>
+         <input type="radio" id="translate" name="command" value="translate">
+            <label for="translate">Translate</label>
+         <input type="radio" id="antonym-synonym" name="command" value="antonym-synonym">
+            <label for="antonym-synonym">Antonym/Synonym</label>
+     </div>
+    <div id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Type your message here..."><br>
+    <button onclick="sendMessage()">Send</button>
+    <button onclick="getPronunciation()">Get Pronunciation</button>
+
+    <script>
+        function sendMessage() {
+            var userMessage = document.getElementById('user-input').value;
+            var commandType = document.querySelector('input[name="command"]:checked').value;
+            if (userMessage === '') return;
+
+            // Check if the command type is "Check Grammar"
+        if (commandType === "grammar") {
+            // Display the user's message
+            document.getElementById('chat-box').innerHTML += '<p>You: ' + userMessage + '</p>';
+
+            // Send the user's message to the server
+            fetch('/chat', {
+                method: 'POST',
+                body: new URLSearchParams({ user_message: userMessage, command_type: commandType}),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the bot's response (prompt to enter the sentence to correct)
+                document.getElementById('chat-box').innerHTML += '<p>Bot: ' + data.bot_response + '</p>';
+            });
+        } else {
+            // For other command types, proceed as before
+            document.getElementById('chat-box').innerHTML += '<p>You: ' + userMessage + '</p>';
+
+            fetch('/chat', {
+                method: 'POST',
+                body: new URLSearchParams({ user_message: userMessage, command_type: commandType}),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('chat-box').innerHTML += '<p>Bot: ' + data.bot_response + '</p>';
+            });
+        }
+
+        document.getElementById('user-input').value = '';
+        }
+
+        // Check if the command type is "Translate"
+        if (commandType === "translate") {
+            // Display the user's message
+            document.getElementById('chat-box').innerHTML += '<p>You: ' + userMessage + '</p>';
+
+            // Prompt user for target language
+            document.getElementById('chat-box').innerHTML += '<p>Bot: Translate to what language?</p>';
+
+            // Send the user's message to the server
+            fetch('/chat', {
+                method: 'POST',
+                body: new URLSearchParams({ user_message: userMessage, command_type: commandType}),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the translated text
+                document.getElementById('chat-box').innerHTML += '<p>Bot: ' + data.bot_response + '</p>';
+            });
+        } else {
+            // For other command types, proceed as before
+            document.getElementById('chat-box').innerHTML += '<p>You: ' + userMessage + '</p>';
+
+            fetch('/chat', {
+                method: 'POST',
+                body: new URLSearchParams({ user_message: userMessage, command_type: commandType}),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('chat-box').innerHTML += '<p>Bot: ' + data.bot_response + '</p>';
+            });
+        }
+
+        document.getElementById('user-input').value = '';
+
+        // Check if the command type is "Antonym/Synonym"
+        if (commandType === "antonym-synonym") {
+            // Display the user's message
+            document.getElementById('chat-box').innerHTML += '<p>You: ' + userMessage + '</p>';
+
+            // Send the user's message to the server
+            fetch('/chat', {
+                method: 'POST',
+                body: new URLSearchParams({ user_message: userMessage, command_type: commandType}),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the synonyms and antonyms
+                document.getElementById('chat-box').innerHTML += '<p>Bot: Synonym = ' + data.bot_response.synonym + '</p>';
+                document.getElementById('chat-box').innerHTML += '<p>Bot: Antonym = ' + data.bot_response.antonym + '</p>';
+            });
+        } else {
+            // For other command types, proceed as before
+            document.getElementById('chat-box').innerHTML += '<p>You: ' + userMessage + '</p>';
+
+            fetch('/chat', {
+                method: 'POST',
+                body: new URLSearchParams({ user_message: userMessage, command_type: commandType}),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('chat-box').innerHTML += '<p>Bot: ' + data.bot_response + '</p>';
+            });
+        }
+
+        document.getElementById('user-input').value = '';
+
+        function getPronunciation() {
+            // Code to get pronunciation
+            // You can use a TTS (Text-to-Speech) API for this purpose
+            // For example, you can use the Google Text-to-Speech API or any other TTS service
+            // Implementing TTS is beyond the scope of this example, so I'm leaving this part blank
+        }
+    </script>
+</body>
+</html>
