@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
      <title>Language Learning Chatbot</title>
     <style>
-
         * {
     margin: 0;
     padding: 0;
@@ -16,6 +15,7 @@
     }
 
     h1 {
+        margin: 50px;
         text-align: center;
         font-feature-settings: 'clig' off, 'liga' off;
         font-family: "Lilita One", serif;
@@ -30,8 +30,37 @@
         -webkit-text-fill-color: transparent;
     }
 
+    h2 {
+        color: #7E9AFF;
+        text-align: center;
+        font-feature-settings: 'clig' off, 'liga' off;
+        font-family: serif;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 40px; /* 200% */
+        letter-spacing: -0.3px;
+    }
+
+    h3 {
+        color: #5B7FFF;
+        text-align: center;
+        font-feature-settings: 'clig' off, 'liga' off;
+        font-family: "serif";
+        font-size: 25px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 40px; /* 160% */
+        letter-spacing: -0.375px;
+    }
+
     #command-type {
-        margin-bottom: 20px;
+        width: 323px;
+        height: 291px;
+        flex-shrink: 0;
+        border-radius: 15px;
+        background: #FFF;
+        box-shadow: 0px 3px 20px 0px #E2E8FF;
     }
 
     input[type="radio"] {
@@ -105,11 +134,13 @@
 </head>
 <body>
      <h1>Meimei Language Assistant</h1>
+     <h2>fast and well-integrated in doing its job to be your language assistant in daily life.</h2>
      <div id="command-type">
+         <h3>Select command</h3>
          <input type="radio" id="grammar" name="command" value="grammar">
-            <label for="grammar">Check Grammar</label>
+            <label for="grammar">Check Grammar</label><br>
          <input type="radio" id="translate" name="command" value="translate">
-            <label for="translate">Translate</label>
+            <label for="translate">Translate</label><br>
          <input type="radio" id="antonym-synonym" name="command" value="antonym-synonym">
             <label for="antonym-synonym">Antonym/Synonym</label>
      </div>

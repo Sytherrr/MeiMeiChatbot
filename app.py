@@ -4,7 +4,8 @@ import openai
 app = Flask(__name__)
 
 # Set OpenAI API key (preferably through environment variable)
-
+api_key = "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"
+openai.api_key = api_key
 
 # Command type validation
 def validate_command_type(command_type):
