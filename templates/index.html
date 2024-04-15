@@ -15,14 +15,14 @@
     }
 
     h1 {
-        margin: 50px;
+        margin: 20px;
         text-align: center;
         font-feature-settings: 'clig' off, 'liga' off;
         font-family: "Lilita One", serif;
         font-size: 42px;
         font-style: normal;
         font-weight: 400;
-        line-height: 40px; /* 95.238% */
+        line-height: 50px; /* 95.238% */
         letter-spacing: -0.63px;
         background: linear-gradient(90deg, #2D5BFF 0%, #8AA4FF 100%);
         background-clip: text;
@@ -34,7 +34,7 @@
         color: #7E9AFF;
         text-align: center;
         font-feature-settings: 'clig' off, 'liga' off;
-        font-family: serif;
+        font-family: Serif;
         font-size: 20px;
         font-style: normal;
         font-weight: 500;
@@ -42,25 +42,8 @@
         letter-spacing: -0.3px;
     }
 
-    h3 {
-        color: #5B7FFF;
-        text-align: center;
-        font-feature-settings: 'clig' off, 'liga' off;
-        font-family: "serif";
-        font-size: 25px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 40px; /* 160% */
-        letter-spacing: -0.375px;
-    }
-
     #command-type {
-        width: 323px;
-        height: 291px;
-        flex-shrink: 0;
-        border-radius: 15px;
-        background: #FFF;
-        box-shadow: 0px 3px 20px 0px #E2E8FF;
+        margin-bottom: 20px;
     }
 
     input[type="radio"] {
@@ -134,13 +117,12 @@
 </head>
 <body>
      <h1>Meimei Language Assistant</h1>
-     <h2>fast and well-integrated in doing its job to be your language assistant in daily life.</h2>
+     <h2>A language assistant chatbot for checking grammar, do the translation and check synonym or antonym</h2>
      <div id="command-type">
-         <h3>Select command</h3>
          <input type="radio" id="grammar" name="command" value="grammar">
-            <label for="grammar">Check Grammar</label><br>
+            <label for="grammar">Check Grammar</label>
          <input type="radio" id="translate" name="command" value="translate">
-            <label for="translate">Translate</label><br>
+            <label for="translate">Translate</label>
          <input type="radio" id="antonym-synonym" name="command" value="antonym-synonym">
             <label for="antonym-synonym">Antonym/Synonym</label>
      </div>
