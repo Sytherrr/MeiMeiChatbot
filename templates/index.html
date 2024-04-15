@@ -5,7 +5,7 @@
      <title>Language Learning Chatbot</title>
     <style>
         * {
-    margin: 0;
+    margin-top: 40px;
     padding: 0;
     box-sizing: border-box;
     }
@@ -31,10 +31,12 @@
     }
 
     h2 {
+        margin-top: -10px;
+        margin-bottom: 30px;
         color: #7E9AFF;
         text-align: center;
         font-feature-settings: 'clig' off, 'liga' off;
-        font-family: Serif;
+        font-family: serif;
         font-size: 20px;
         font-style: normal;
         font-weight: 500;
@@ -43,7 +45,7 @@
     }
 
     #command-type {
-        margin-bottom: 20px;
+        margin: -20px 370px -15px;
     }
 
     input[type="radio"] {
@@ -65,11 +67,13 @@
     }
 
     #chat-box {
-        margin-bottom: 20px;
+        margin-bottom: auto;
+        margin-left: 370px;
+        margin-right: 370px;
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
-        min-height: 200px;
+        min-height: 400px;
         overflow-y: auto;
     }
 
@@ -94,20 +98,40 @@
     }
 
     #user-input {
-        width: calc(100% - 120px);
-        padding: 8px;
+        margin-top: 10px;
+        margin-left: 370px;
+        margin-right: 370px;
+        margin-bottom: auto;
+        width: 951px;
+        padding: 15px;
         border: 1px solid #ccc;
         border-radius: 5px;
     }
-
-    button {
-        padding: 8px 15px;
-        margin-left: 5px;
+    .btn-send {
+        padding: 8px 20px;
+        margin-left: 740px;
+        margin-top: auto;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         background-color: #007bff;
         color: #fff;
+    }
+    .btn-send:hover {
+        background-color: #0056b3;
+    }
+    .btn-pronounce {
+        padding: 8px 15px;
+        margin-left: 370px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: #fff;
+    }
+    .btn-pronounce:hover {
+        background-color: #0056b3;
     }
 
     button:hover {
@@ -116,8 +140,10 @@
     </style>
 </head>
 <body>
-     <h1>Meimei Language Assistant</h1>
-     <h2>A language assistant chatbot for checking grammar, do the translation and check synonym or antonym</h2>
+     <div class="container-fluid">
+         <h1>MeiMei Language Assistant</h1>
+         <h2>A language assistant chatbot for checking grammar, do the translation and check synonym or antonym</h2>
+     </div>
      <div id="command-type">
          <input type="radio" id="grammar" name="command" value="grammar">
             <label for="grammar">Check Grammar</label>
@@ -128,8 +154,8 @@
      </div>
     <div id="chat-box"></div>
     <input type="text" id="user-input" placeholder="Type your message here..."><br>
-    <button onclick="sendMessage()">Send</button>
-    <button onclick="getPronunciation()">Get Pronunciation</button>
+     <button id="pronounce" class="btn-pronounce" onclick="getPronunciation()">Get Pronunciation</button>
+     <button id="send" class="btn-send" onclick="sendMessage()">Send</button>
 
     <script>
         function sendMessage() {
