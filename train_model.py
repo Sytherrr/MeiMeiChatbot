@@ -1,87 +1,68 @@
-# train_model.py
 import json
-import numpy as np
-import spacy
-from keras.models import Sequential
-from keras.layers import Dense
+import joblib
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import LinearSVC
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
 
-# Load the JSON file containing word mappings
-with open('dataset/words_map.json', 'r') as file:
-    word_map = json.load(file)
+# Load the dataset
+with open('syn_ant_sent_sim.json', 'r') as f:
+    data = json.load(f)
 
-# Process the word mappings to extract synonyms and antonyms
-synonyms = {}
-antonyms = {}
+# Prepare the data
+words_syn = []
+synonyms = []
+words_ant = []
+antonyms = []
 
-for word, data in word_map.items():
-    if 'synonyms' in data:
-        synonyms[word] = data['synonyms']
-    if 'antonyms' in data:
-        antonyms[word] = data['antonyms']
+for item in data:
+    if 'syn_list' in item and len(item['syn_list']) > 0:  # Check if 'syn_list' exists and is not empty
+        words_syn.append(item['word'])
+        synonyms.append(item['syn_list'][0]['synonym'])  # This is a simplification, you might want to handle synonyms and antonyms differently
+    if 'ant_list' in item and len(item['ant_list']) > 0:  # Check if 'ant_list' exists and is not empty
+        words_ant.append(item['word'])
+        antonyms.append(item['ant_list'][0]['antonym'])  # This is a simplification, you might want to handle synonyms and antonyms differently
 
-# Load spaCy's English language model
-nlp = spacy.load('en_core_web_md')
+# Split the data into training and test sets
+X_train_syn, X_test_syn, y_train_syn, y_test_syn = train_test_split(words_syn, synonyms, test_size=0.2, random_state=42)
+X_train_ant, X_test_ant, y_train_ant, y_test_ant = train_test_split(words_ant, antonyms, test_size=0.2, random_state=42)
 
-# Function to get word embeddings
-def get_word_embedding(word):
-    if isinstance(word, float):
-        # Handle float values appropriately, for example, convert them to strings
-        word = str(word)
-    return nlp(word).vector
-
-# Prepare training data
-X_train = []
-y_train = []
-
-for word, data in word_map.items():
-    if isinstance(data, dict):  # Check if data is a dictionary
-        syns = data.get('synonyms', [])  # Get synonyms, or an empty list if not present
-        ants = data.get('antonyms', [])  # Get antonyms, or an empty list if not present
-
-        # Ensure syns and ants are lists
-        if not isinstance(syns, list):
-            syns = [syns]  # Convert to list if it's not already one
-        if not isinstance(ants, list):
-            ants = [ants]  # Convert to list if it's not already one
-
-        for syn in syns:
-            # Get word embeddings
-            word_embedding = get_word_embedding(word)
-            syn_embedding = get_word_embedding(syn)
-            # Concatenate embeddings
-            concatenated_embedding = np.concatenate((word_embedding, syn_embedding))
-            X_train.append(concatenated_embedding)
-            y_train.append(1)
-
-        for ant in ants:
-            # Get word embeddings
-            word_embedding = get_word_embedding(word)
-            ant_embedding = get_word_embedding(ant)
-            # Concatenate embeddings
-            concatenated_embedding = np.concatenate((word_embedding, ant_embedding))
-            X_train.append(concatenated_embedding)
-            y_train.append(0)
-    else:
-        print(f"Warning: Unexpected data type for '{word}' - Skipping...")
-
-# Convert lists to numpy arrays
-X_train = np.array(X_train)
-y_train = np.array(y_train)
-
-# Ensure the concatenated embeddings have the correct shape
-assert X_train.shape[1] == 600, "Concatenated embeddings have incorrect shape"
-
-# Define the neural network model
-model = Sequential([
-    Dense(128, input_dim=600, activation='relu'),
-    Dense(64, activation='relu'),
-    Dense(1, activation='sigmoid')
+# Create a pipeline that first transforms the data using TfidfVectorizer, then trains a model using LinearSVC
+pipeline_syn = Pipeline([
+    ('tfidf', TfidfVectorizer()),
+    ('clf', LinearSVC()),
 ])
 
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+pipeline_ant = Pipeline([
+    ('tfidf', TfidfVectorizer()),
+    ('clf', LinearSVC()),
+])
 
-# Train the model
-model.fit(X_train, y_train, epochs=10, batch_size=32, validation_split=0.2)
+# Train the model for synonyms
+pipeline_syn.fit(X_train_syn, y_train_syn)
 
-# Save the trained model
-model.save('word_relationship_model.h5')
+# Train the model for antonyms
+pipeline_ant.fit(X_train_ant, y_train_ant)
+
+# Save the models
+pipeline_syn.fit(X_train_syn, y_train_syn)
+pipeline_ant.fit(X_train_ant, y_train_ant)
+
+# Save the trained models
+joblib.dump(pipeline_syn, 'synonym_model.pkl')
+joblib.dump(pipeline_ant, 'antonym_model.pkl')
+
+# Test the model for synonyms
+predictions_syn = pipeline_syn.predict(X_test_syn)
+
+# Test the model for antonyms
+predictions_ant = pipeline_ant.predict(X_test_ant)
+
+# Print a classification report for synonyms
+print("Classification report for synonyms:")
+print(classification_report(y_test_syn, predictions_syn))
+
+# Print a classification report for antonyms
+print("Classification report for antonyms:")
+print(classification_report(y_test_ant, predictions_ant))
