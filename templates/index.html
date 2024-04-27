@@ -154,7 +154,7 @@
      </div>
     <div id="chat-box"></div>
     <input type="text" id="user-input" placeholder="Type your message here..."><br>
-     <button id="pronounce" class="btn-pronounce" onclick="getPronunciation()">Get Pronunciation</button>
+    <button id="pronounce" class="btn-pronounce" onclick="getPronunciation()">Get Pronunciation</button>
      <button id="send" class="btn-send" onclick="sendMessage()">Send</button>
 
     <script>
@@ -280,11 +280,38 @@
         document.getElementById('user-input').value = '';
 
         function getPronunciation() {
-            // Code to get pronunciation
-            // You can use a TTS (Text-to-Speech) API for this purpose
-            // For example, you can use the Google Text-to-Speech API or any other TTS service
-            // Implementing TTS is beyond the scope of this example, so I'm leaving this part blank
+            var userMessage = document.getElementById('user-input').value;
+            
+            // Check if there is any input to pronounce
+            if (userMessage === '') {
+                alert("Please type something to pronounce.");
+                return;
+            }
+            
+            // Detect language of the input text
+            var language = detectLanguage(userMessage);
+            
+            // Create a new SpeechSynthesisUtterance object
+            var speech = new SpeechSynthesisUtterance();
+            
+            // Set the text to pronounce
+            speech.text = userMessage;
+            
+            // Set the language for pronunciation
+            speech.lang = language;
+            
+            // Speak the text
+            speechSynthesis.speak(speech);
         }
-    </script>
+        
+        // Function to detect language
+        function detectLanguage(text) {
+            // You can use a language detection library like guessLanguage.js or implement your own detection logic here
+            var detectedLanguage = navigator.languages[0] || navigator.language || navigator.userLanguage;
+            
+            return detectedLanguage;
+        }
+        
+</script>
 </body>
 </html>
